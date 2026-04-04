@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Catalog</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header><h1>Tech Catalog</h1></header>
+    <main class="grid-container">
+        <% products.forEach(function(product) { %>
+            <div class="card">
+                <h2><%= product.name %></h2>
+                <p class="price">$<%= product.price %></p>
+                <p><%= product.description %></p>
+            </div>
+        <% }); %>
+    </main>
+</body>
+</html>

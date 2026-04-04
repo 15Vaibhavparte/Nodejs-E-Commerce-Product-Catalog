@@ -1,0 +1,20 @@
+ecommerce-catalog/
+├── config/
+│   └── database.js          # SQLite connection setup
+├── controllers/
+│   └── productController.js # Handles business logic
+├── public/
+│   └── css/
+│       └── style.css        # Modern, responsive CSS
+├── routes/
+│   └── index.js             # Express route definitions
+├── views/
+│   ├── index.ejs            # Main product catalog UI
+│   └── error.ejs            # Error page UI
+├── .eslintrc.json           # Code quality rules
+├── .gitignore               # Ignored files for Git
+├── docker-compose.yml       # Local orchestration
+├── Dockerfile               # Container definition
+├── Jenkinsfile              # CI/CD Pipeline as Code
+├── package.json             # Dependencies and scripts
+└── server.js                # Application entry point
