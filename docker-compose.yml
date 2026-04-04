@@ -9,5 +9,7 @@ services:
     environment:
       - NODE_ENV=development
     volumes:
-      - .:/app
-      - /app/node_modules
+      # Option A: Map the whole config folder (Safest)
+      - ./config:/app/config
+    # This ensures the app restarts if the server reboots or the app crashes
+    restart: always

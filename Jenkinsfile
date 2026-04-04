@@ -1,8 +1,15 @@
 pipeline {
     agent any
-    
+
+    tools {
+        jdk 'jdk21'
+    }
+
     environment {
-        DOCKER_IMAGE = 'myregistry/ecommerce-catalog'
+        NEXUS_URL = "http://65.0.177.156:8081/repository/E-commerce/"
+        SONAR_PROJECT_KEY = "E-commerce"
+        DOCKERHUB_USERNAME = 'parte15'
+        DOCKER_IMAGE = "${DOCKERHUB_USERNAME}/ecommerce-catalog"
         IMAGE_TAG = "${env.BUILD_NUMBER}" // Versioning using build number
         // Credentials ID in Jenkins for Docker Registry
         DOCKER_CREDS_ID = 'dockerhub-credentials' 
@@ -29,7 +36,7 @@ pipeline {
                 withSonarQubeEnv('sonar-server') {
                     // Running the scanner directly on JS files
                     sh "$SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectKey=nodejs-ecommerce \
+                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                         -Dsonar.sources=. \
                         -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
                 }
