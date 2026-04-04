@@ -5,7 +5,8 @@ pipeline {
         DOCKER_IMAGE = 'myregistry/ecommerce-catalog'
         IMAGE_TAG = "${env.BUILD_NUMBER}" // Versioning using build number
         // Credentials ID in Jenkins for Docker Registry
-        DOCKER_CREDENTIALS_ID = 'docker-hub-creds' 
+        DOCKER_CREDS_ID = 'dockerhub-credentials' 
+        SCANNER_HOME = tool 'sonar-scanner'
     }
     
     stages {
@@ -15,7 +16,7 @@ pipeline {
             }
         }
         
-        stage('Install & Lint') {
+        stage('Install Dependencies') {
             steps {
                 sh 'npm ci'
                 sh 'npm run lint'
@@ -23,55 +24,34 @@ pipeline {
         }
         
         // SonarQube integration (Optional/Hypothetical)
-        stage('Code Quality Analysis') {
+        stage('SonarQube Analysis') {
             steps {
-                echo "Running SonarQube Scanner..."
-                // sh 'sonar-scanner -Dsonar.projectKey=ecommerce-catalog'
-            }
-        }
-        
-        stage('Build Image') {
-            steps {
-                echo "Building multi-stage Docker image..."
-                sh "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest ."
-            }
-        }
-        
-        stage('Push Artifacts') {
-            steps {
-                echo "Pushing Docker image to Registry..."
-                /* withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
-                    sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
-                    sh "docker push ${DOCKER_IMAGE}:latest"
+                withSonarQubeEnv('sonar-server') {
+                    // Running the scanner directly on JS files
+                    sh "$SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=nodejs-ecommerce \
+                        -Dsonar.sources=. \
+                        -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
                 }
-                */
             }
         }
         
-        stage('Deploy') {
-            when {
-                branch 'main' // Only deploy on main branch
-            }
+        stage('Quality Gate') {
             steps {
-                echo "Deploying application to Production server..."
-                // In reality, this might be an SSH script, kubectl apply, or Helm chart deployment
-                sh "docker-compose up -d" 
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
-    }
-    
-    post {
-        always {
-            echo 'Pipeline finished. Cleaning up...'
-            // Clean up old images to save disk space on Jenkins worker
-            // sh "docker rmi ${DOCKER_IMAGE}:${IMAGE_TAG} || true"
+
+        stage('Docker Build & Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDS_ID}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                    sh "docker build -t \$DOCKER_USER/node-app:${env.BUILD_NUMBER} ."
+                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                    sh "docker push \$DOCKER_USER/node-app:${env.BUILD_NUMBER}"
+                }
+            }
         }
-        success {
-            echo 'Build succeeded!'
-        }
-        failure {
-            echo 'Build failed. Sending notifications...'
-        }
-    }
+    }   
 }
