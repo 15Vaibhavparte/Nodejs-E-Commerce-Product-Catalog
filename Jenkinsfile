@@ -11,7 +11,6 @@ pipeline {
         SONAR_PROJECT_KEY = "E-commerce"
         DOCKERHUB_USERNAME = 'parte15'
         DOCKER_IMAGE = "${DOCKERHUB_USERNAME}/ecommerce-catalog"
-        IMAGE_TAG = "${env.BUILD_NUMBER}" // Versioning using build number
         // Credentials ID in Jenkins for Docker Registry
         DOCKER_CREDS_ID = 'dockerhub-credentials' 
         SCANNER_HOME = tool 'sonar-scanner'
@@ -54,10 +53,11 @@ pipeline {
 
         stage('Docker Build & Push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDS_ID}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                    sh "docker build -t \$DOCKER_USER/node-app:${env.BUILD_NUMBER} ."
-                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
-                    sh "docker push \$DOCKER_USER/node-app:${env.BUILD_NUMBER}"
+                script {
+                    def app = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
+                    docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_CREDS_ID') {
+                    app.push()
+                    app.push('latest')
                 }
             }
         }
