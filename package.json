@@ -24,5 +24,11 @@
     "type": "git",
     "url": "git+https://github.com/15Vaibhavparte/Nodejs-E-Commerce-Product-Catalog.git"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/15Vaibhavparte/Nodejs-E-Commerce-Product-Catalog/issues"
+  },
+  "homepage": "https://github.com/15Vaibhavparte/Nodejs-E-Commerce-Product-Catalog#readme"
 }
