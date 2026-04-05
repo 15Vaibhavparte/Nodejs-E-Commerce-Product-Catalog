@@ -1,6 +1,28 @@
 {
-    "scripts": {
+  "scripts": {
     "lint": "eslint .",
     "start": "node server.js"
-  }
+  },
+  "dependencies": {
+    "sqlite3": "^6.0.1"
+  },
+  "name": "nodejs-e-commerce-product-catalog",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {
+    "eslint": "^10.2.0",
+    "nodemon": "^3.1.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/15Vaibhavparte/Nodejs-E-Commerce-Product-Catalog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/15Vaibhavparte/Nodejs-E-Commerce-Product-Catalog/issues"
+  },
+  "homepage": "https://github.com/15Vaibhavparte/Nodejs-E-Commerce-Product-Catalog#readme",
+  "description": ""
 }
