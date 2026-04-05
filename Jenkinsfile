@@ -3,10 +3,11 @@ pipeline {
 
     tools {
         jdk 'jdk21'
+        nodejs 'node18'
     }
 
     environment {
-        NEXUS_URL = "http://65.0.177.156:8081/repository/E-commerce/"
+        NEXUS_URL = "http://3.110.51.8:8081/repository/e-commerce/"
         SONAR_PROJECT_KEY = "E-commerce"
         DOCKERHUB_USERNAME = 'parte15'
         DOCKER_IMAGE = "${DOCKERHUB_USERNAME}/ecommerce-catalog"
