@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                     def app = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
-                    docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_CREDS_ID') {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDS_ID) {
                         app.push()
                         app.push('latest')
                     }
