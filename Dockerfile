@@ -1,5 +1,5 @@
 # Stage 1: Build & Install dependencies
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 # Install ALL dependencies (including dev for linting/testing)
@@ -7,7 +7,7 @@ RUN npm ci
 COPY . .
 
 # Stage 2: Production Image
-FROM node:18-alpine
+FROM node:20-alpine
 WORKDIR /app
 # Set environment to production
 ENV NODE_ENV=production
